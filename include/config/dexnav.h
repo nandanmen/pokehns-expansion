@@ -1,15 +1,44 @@
 #ifndef GUARD_CONFIG_DEXNAV_H
 #define GUARD_CONFIG_DEXNAV_H
 
+// NOTE: this header is included from constants/global.h *before* IS_HNS is
+// defined, so test the raw build define here instead.
+#ifdef POKEMON_HNS
+#define DEXNAV_ENABLED                TRUE   // Whether or not DexNav is enabled. If TRUE, flags/vars below must all be non-zero
+#else
 #define DEXNAV_ENABLED                FALSE  // Whether or not DexNav is enabled. If TRUE, flags/vars below must all be non-zero
+#endif
 #define USE_DEXNAV_SEARCH_LEVELS      FALSE  /* WARNING: POSSIBLY EXCEEDS SAVEBLOCK SPACE! REQUIRES 1 BYTE PER SPECIES */
 
+// Simplified DexNav (HnS): no chains, fixed bonuses, every encounter slot browsable.
+#ifdef POKEMON_HNS
+#define DEXNAV_USE_CHAINS             FALSE  // If FALSE, the chain never grows, so it gives no level or shiny bonus and isn't shown
+#define DEXNAV_PERFECT_IVS            3      // Every DexNav Pokémon gets this many perfect IVs. 0 rolls them from the search level
+#define DEXNAV_ALWAYS_EGG_MOVE        TRUE   // Every DexNav Pokémon knows a random egg move, if its evolution line has any
+#define DEXNAV_SHOW_UNSEEN            TRUE   // Unseen species show their icon and name and can be searched for
+#define DEXNAV_PAUSE_WILD_ENCOUNTERS  TRUE   // No random encounters while sneaking up on a DexNav Pokémon
+#else
+#define DEXNAV_USE_CHAINS             TRUE
+#define DEXNAV_PERFECT_IVS            0
+#define DEXNAV_ALWAYS_EGG_MOVE        FALSE
+#define DEXNAV_SHOW_UNSEEN            FALSE
+#define DEXNAV_PAUSE_WILD_ENCOUNTERS  FALSE
+#endif
+
 // Flag/var defines
+#ifdef POKEMON_HNS
+#define DN_FLAG_SEARCHING             FLAG_DEXNAV_SEARCHING
+#define DN_FLAG_DEXNAV_GET            FLAG_SYS_POKEDEX_GET // DexNav comes with the Pokédex
+#define DN_FLAG_DETECTOR_MODE         FLAG_DEXNAV_DETECTOR_MODE
+#define DN_VAR_SPECIES                VAR_DEXNAV_SPECIES
+#define DN_VAR_STEP_COUNTER           VAR_DEXNAV_STEP_COUNTER
+#else
 #define DN_FLAG_SEARCHING             0 // Searching for mon
 #define DN_FLAG_DEXNAV_GET            0 // DexNav shows in start menu
 #define DN_FLAG_DETECTOR_MODE         0 // Allow player to find hidden mons
 #define DN_VAR_SPECIES                0 // Registered DexNav species
 #define DN_VAR_STEP_COUNTER           0 // Steps for finding hidden pokemon
+#endif
 
 // Search parameters
 #define DEXNAV_TIMEOUT                  15  // 15 seconds is the time out. Max of 1092 seconds allowed

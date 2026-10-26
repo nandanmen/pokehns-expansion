@@ -849,8 +849,8 @@
 #define FLAG_ENABLE_CONDITION                       0x303
 #define FLAG_UNUSED_36                              0x304
 #define FLAG_UNUSED_37                              0x305
-#define FLAG_UNUSED_38                              0x306
-#define FLAG_UNUSED_39                              0x307
+#define FLAG_DEXNAV_SEARCHING                       0x306
+#define FLAG_DEXNAV_DETECTOR_MODE                   0x307 // Never set: HnS has no hidden DexNav Pokémon
 #define HNS_UNUSED_COUNT                            40
 
 #define HNS_CONTENT_FLAGS_END                       0x308

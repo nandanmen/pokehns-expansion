@@ -111,7 +111,8 @@ struct DexNavSearch
     u32 startingTime;
     u8 hiddenSearch:1;
     u8 isHiddenMon:1;
-    u8 unk:6;
+    u8 hasEggMove:1;    // moves[0] was replaced with an egg move
+    u8 unk:5;
     u16 palBuffer[16];
 };
 
@@ -145,7 +146,7 @@ static void Task_DexNavMain(u8 taskId);
 static void PrintCurrentSpeciesInfo(void);
 // SEARCH
 static bool8 TryStartHiddenMonFieldEffect(enum EncounterType environment, u8 xSize, u8 ySize, bool8 smallScan);
-static void DexNavGenerateMoveset(u16 species, u8 searchLevel, u8 encounterLevel, u16 *moveDst);
+static bool8 DexNavGenerateMoveset(u16 species, u8 searchLevel, u8 encounterLevel, u16 *moveDst);
 static u16 DexNavGenerateHeldItem(u16 species, u8 searchLevel);
 static u8 DexNavGetAbilityNum(u16 species, u8 searchLevel);
 static u8 DexNavGeneratePotential(u8 searchLevel);
@@ -476,7 +477,7 @@ static void AddSearchWindowText(u16 species, u8 proximity, u8 searchLevel, bool8
     {
         PlaySE(SE_POKENAV_ON);
         // move
-        if (searchLevel > 1 && sDexNavSearchDataPtr->moves[0])
+        if ((DEXNAV_ALWAYS_EGG_MOVE || searchLevel > 1) && sDexNavSearchDataPtr->hasEggMove)
         {
             StringCopy(gStringVar1, GetMoveName(sDexNavSearchDataPtr->moves[0]));
             StringExpandPlaceholders(gStringVar4, sText_EggMove);
@@ -499,13 +500,16 @@ static void AddSearchWindowText(u16 species, u8 proximity, u8 searchLevel, bool8
         }
     }
 
-    //chain level - always present
-    ConvertIntToDecimalStringN(gStringVar1, gSaveBlock3Ptr->dexNavChain, STR_CONV_MODE_LEFT_ALIGN, 3);
-    if (gSaveBlock3Ptr->dexNavChain > 99)
-        StringExpandPlaceholders(gStringVar4, sText_DexNavChainLong);
-    else
-        StringExpandPlaceholders(gStringVar4, sText_DexNavChain);
-    AddTextPrinterParameterized3(windowId, FONT_SMALL, SEARCH_ARROW_X - 16, 12, sSearchFontColor, TEXT_SKIP_DRAW, gStringVar4);
+    //chain level
+    if (DEXNAV_USE_CHAINS)
+    {
+        ConvertIntToDecimalStringN(gStringVar1, gSaveBlock3Ptr->dexNavChain, STR_CONV_MODE_LEFT_ALIGN, 3);
+        if (gSaveBlock3Ptr->dexNavChain > 99)
+            StringExpandPlaceholders(gStringVar4, sText_DexNavChainLong);
+        else
+            StringExpandPlaceholders(gStringVar4, sText_DexNavChain);
+        AddTextPrinterParameterized3(windowId, FONT_SMALL, SEARCH_ARROW_X - 16, 12, sSearchFontColor, TEXT_SKIP_DRAW, gStringVar4);
+    }
 
     CopyWindowToVram(sDexNavSearchDataPtr->windowId, 2);
 }
@@ -807,7 +811,7 @@ static void SetUpDexNavSearch(void)
     sDexNavSearchDataPtr->exclamationSpriteId = MAX_SPRITES;
     sDexNavSearchDataPtr->searchLevel = searchLevel;
 
-    DexNavGenerateMoveset(species, searchLevel, sDexNavSearchDataPtr->monLevel, &sDexNavSearchDataPtr->moves[0]);
+    sDexNavSearchDataPtr->hasEggMove = DexNavGenerateMoveset(species, searchLevel, sDexNavSearchDataPtr->monLevel, &sDexNavSearchDataPtr->moves[0]);
     sDexNavSearchDataPtr->heldItem = DexNavGenerateHeldItem(species, searchLevel);
     sDexNavSearchDataPtr->abilityNum = DexNavGetAbilityNum(species, searchLevel);
     sDexNavSearchDataPtr->potential = DexNavGeneratePotential(searchLevel);
@@ -1163,7 +1167,7 @@ static void DexNavUpdateSearchWindow(u8 proximity, u8 searchLevel)
                 gSprites[sDexNavSearchDataPtr->itemSpriteId].invisible = FALSE;
         }
 
-        if (searchLevel > 4)
+        if (DEXNAV_PERFECT_IVS || searchLevel > 4)
         {
             if (sDexNavSearchDataPtr->starSpriteIds[0] != MAX_SPRITES)
                 gSprites[sDexNavSearchDataPtr->starSpriteIds[0]].invisible = FALSE;
@@ -1239,7 +1243,8 @@ static u8 DexNavTryGenerateMonLevel(u16 species, enum EncounterType environment)
         return levelBase + levelBonus;
 }
 
-static void DexNavGenerateMoveset(u16 species, u8 searchLevel, u8 encounterLevel, u16 *moveDst)
+// Returns TRUE if the first move slot was set to an egg move
+static bool8 DexNavGenerateMoveset(u16 species, u8 searchLevel, u8 encounterLevel, u16 *moveDst)
 {
     bool8 genMove = FALSE;
     u16 randVal = Random() % 100;
@@ -1247,7 +1252,11 @@ static void DexNavGenerateMoveset(u16 species, u8 searchLevel, u8 encounterLevel
     u16 eggMoveBuffer[EGG_MOVES_ARRAY_COUNT];
 
     // see if first move slot should be an egg move
-    if (searchLevel < 5)
+    if (DEXNAV_ALWAYS_EGG_MOVE)
+    {
+        genMove = TRUE;
+    }
+    else if (searchLevel < 5)
     {
         if (SEARCHLEVEL0_MOVECHANCE != 0 && randVal < SEARCHLEVEL0_MOVECHANCE)
             genMove = TRUE;
@@ -1290,8 +1299,12 @@ static void DexNavGenerateMoveset(u16 species, u8 searchLevel, u8 encounterLevel
     {
         u8 numEggMoves = GetEggMoves(&gEnemyParty[0], eggMoveBuffer);
         if (numEggMoves != 0)
+        {
             moveDst[0] = eggMoveBuffer[Random() % numEggMoves];
+            return TRUE;
+        }
     }
+    return FALSE;
 }
 
 static u16 DexNavGenerateHeldItem(u16 species, u8 searchLevel)
@@ -1394,6 +1407,9 @@ static u8 DexNavGeneratePotential(u8 searchLevel)
 {
     u8 genChance = 0;
     int randVal = Random() % 100;
+
+    if (DEXNAV_PERFECT_IVS)
+        return DEXNAV_PERFECT_IVS;
 
     if (searchLevel < 5)
     {
@@ -1976,7 +1992,7 @@ static void TryDrawIconInSlot(u16 species, s16 x, s16 y)
 {
     if (species == SPECIES_NONE || species > NUM_SPECIES)
         CreateNoDataIcon(x, y);   //'X' in slot
-    else if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN))
+    else if (!DEXNAV_SHOW_UNSEEN && !GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN))
         CreateMonIcon(SPECIES_NONE, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF); //question mark
     else
         CreateMonIcon(species, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF);
@@ -2044,7 +2060,7 @@ static u16 DexNavGetSpecies(void)
         return SPECIES_NONE;
     }
 
-    if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN))
+    if (!DEXNAV_SHOW_UNSEEN && !GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN))
         return SPECIES_NONE;
 
     return species;
@@ -2099,7 +2115,7 @@ static void PrintCurrentSpeciesInfo(void)
     enum NationalDexOrder dexNum = SpeciesToNationalPokedexNum(species);
     enum Type type1, type2;
 
-    if (!GetSetPokedexFlag(dexNum, FLAG_GET_SEEN))
+    if (!DEXNAV_SHOW_UNSEEN && !GetSetPokedexFlag(dexNum, FLAG_GET_SEEN))
         species = SPECIES_NONE;
 
     // clear windows
@@ -2129,7 +2145,7 @@ static void PrintCurrentSpeciesInfo(void)
     }
 
     //search level
-    if (species == SPECIES_NONE)
+    if (species == SPECIES_NONE || !USE_DEXNAV_SEARCH_LEVELS)
     {
         AddTextPrinterParameterized3(WINDOW_INFO, FONT_SMALL, 0, SEARCH_LEVEL_Y, sFontColor_Black, 0, sText_DexNav_NoInfo);
     }
@@ -2157,8 +2173,15 @@ static void PrintCurrentSpeciesInfo(void)
     }
 
     //current chain
-    ConvertIntToDecimalStringN(gStringVar1, gSaveBlock3Ptr->dexNavChain, STR_CONV_MODE_LEFT_ALIGN, 3);
-    AddTextPrinterParameterized3(WINDOW_INFO, FONT_SMALL, 0, CHAIN_BONUS_Y, sFontColor_Black, 0, gStringVar1);
+    if (DEXNAV_USE_CHAINS)
+    {
+        ConvertIntToDecimalStringN(gStringVar1, gSaveBlock3Ptr->dexNavChain, STR_CONV_MODE_LEFT_ALIGN, 3);
+        AddTextPrinterParameterized3(WINDOW_INFO, FONT_SMALL, 0, CHAIN_BONUS_Y, sFontColor_Black, 0, gStringVar1);
+    }
+    else
+    {
+        AddTextPrinterParameterized3(WINDOW_INFO, FONT_SMALL, 0, CHAIN_BONUS_Y, sFontColor_Black, 0, sText_DexNav_NoInfo);
+    }
 
     CopyWindowToVram(WINDOW_INFO, 3);
     PutWindowTilemap(WINDOW_INFO);
@@ -2686,6 +2709,7 @@ void ResetDexNavSearch(void)
 
 void IncrementDexNavChain(void)
 {
-    if (gSaveBlock3Ptr->dexNavChain < DEXNAV_CHAIN_MAX)
+    // With chains off the chain stays at 0, so it never boosts levels or shiny odds
+    if (DEXNAV_USE_CHAINS && gSaveBlock3Ptr->dexNavChain < DEXNAV_CHAIN_MAX)
         gSaveBlock3Ptr->dexNavChain++;
 }
