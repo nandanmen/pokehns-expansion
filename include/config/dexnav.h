@@ -17,12 +17,16 @@
 #define DEXNAV_ALWAYS_EGG_MOVE        TRUE   // Every DexNav Pokémon knows a random egg move, if its evolution line has any
 #define DEXNAV_SHOW_UNSEEN            TRUE   // Unseen species show their icon and name and can be searched for
 #define DEXNAV_PAUSE_WILD_ENCOUNTERS  TRUE   // No random encounters while sneaking up on a DexNav Pokémon
+#define DEXNAV_HELD_ITEM_CHANCE       50     // % chance to hold one of its wild items (rare item 1 in 10). 0 uses the search level
+#define DEXNAV_HIDDEN_ABILITY_CHANCE  33     // % chance of its Hidden Ability. 0 uses the search level and needs the species caught before
 #else
 #define DEXNAV_USE_CHAINS             TRUE
 #define DEXNAV_PERFECT_IVS            0
 #define DEXNAV_ALWAYS_EGG_MOVE        FALSE
 #define DEXNAV_SHOW_UNSEEN            FALSE
 #define DEXNAV_PAUSE_WILD_ENCOUNTERS  FALSE
+#define DEXNAV_HELD_ITEM_CHANCE       0
+#define DEXNAV_HIDDEN_ABILITY_CHANCE  0
 #endif
 
 // Flag/var defines

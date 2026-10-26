@@ -484,7 +484,7 @@ static void AddSearchWindowText(u16 species, u8 proximity, u8 searchLevel, bool8
             AddTextPrinterParameterized3(windowId, FONT_SMALL, WINDOW_MOVE_NAME_X, 0, sSearchFontColor, TEXT_SKIP_DRAW, gStringVar4);
         }
 
-        if (searchLevel > 2)
+        if (DEXNAV_HIDDEN_ABILITY_CHANCE || DEXNAV_HELD_ITEM_CHANCE || searchLevel > 2)
         {
             // ability name
             StringCopy(gStringVar1, gAbilitiesInfo[GetAbilityBySpecies(species, sDexNavSearchDataPtr->abilityNum)].name);
@@ -1160,7 +1160,7 @@ static void DexNavUpdateSearchWindow(u8 proximity, u8 searchLevel)
 
     if (proximity <= SNEAKING_PROXIMITY)
     {
-        if (searchLevel > 2 && sDexNavSearchDataPtr->heldItem)
+        if ((DEXNAV_HELD_ITEM_CHANCE || searchLevel > 2) && sDexNavSearchDataPtr->heldItem)
         {
             // toggle item view
             if (sDexNavSearchDataPtr->itemSpriteId != MAX_SPRITES)
@@ -1314,6 +1314,17 @@ static u16 DexNavGenerateHeldItem(u16 species, u8 searchLevel)
     enum Item item1 = gSpeciesInfo[species].itemCommon;
     enum Item item2 = gSpeciesInfo[species].itemRare;
 
+    if (DEXNAV_HELD_ITEM_CHANCE)
+    {
+        if (randVal >= DEXNAV_HELD_ITEM_CHANCE || (item1 == ITEM_NONE && item2 == ITEM_NONE))
+            return ITEM_NONE;
+        if (item1 == ITEM_NONE)
+            return item2;
+        if (item2 == ITEM_NONE)
+            return item1;
+        return (Random() % 10 == 0) ? item2 : item1;
+    }
+
     // if both are the same, 100% to hold
     if (item1 == item2)
         return item1;
@@ -1341,7 +1352,12 @@ static u8 DexNavGetAbilityNum(u16 species, u8 searchLevel)
     u16 randVal = Random() % 100;
     u8 abilityNum = 0;
 
-    if (searchLevel < 5)
+    if (DEXNAV_HIDDEN_ABILITY_CHANCE)
+    {
+        if (randVal < DEXNAV_HIDDEN_ABILITY_CHANCE && GetSpeciesAbility(species, 2) != ABILITY_NONE)
+            return 2;
+    }
+    else if (searchLevel < 5)
     {
         #if (SEARCHLEVEL0_ABILITYCHANCE != 0)
         if (randVal < SEARCHLEVEL0_ABILITYCHANCE)
