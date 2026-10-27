@@ -270,9 +270,10 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
         }
         PlaySE(SE_BIKE_BELL);
     }
-    else if (input->pressedRButton && !input->pressedStartButton && TryStartDexNavSearch())
+    else if (input->pressedRButton && !input->input_field_1_2 && TryStartDexNavSearch())
     {
-        // R+START is left free for the debug menu
+        // R+START is left free for the debug menu (input_field_1_2 is its trigger;
+        // pressedStartButton is already cleared by then)
         return TRUE;
     }
 #else
