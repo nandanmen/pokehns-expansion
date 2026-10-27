@@ -338,6 +338,11 @@ struct ChallengeSettings
     u8 tx_Features_FrontierBans:1;
     u8 tx_Difficulty_EscapeRopeDig:1;
     u8 tx_Features_ShinyChance:4;
+    // Assists (options menu). 1 = enabled; they share ShinyChance's byte so the
+    // layout doesn't move, and old saves read them as 0 (off)
+    u8 infiniteRareCandy:1;
+    u8 infiniteRepel:1;
+    u8 autoHealAfterBattle:1;
 };
 
 struct SaveBlock3

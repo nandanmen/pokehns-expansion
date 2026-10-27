@@ -21,6 +21,7 @@
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "event_data.h"
+#include "item.h"
 #include "constants/flags.h"
 
 // =============================================================================
@@ -31,6 +32,7 @@ enum {
     TAB_MAIN,
     TAB_BATTLE,
     TAB_SOUND,
+    TAB_ASSIST,
     TAB_COUNT,
 };
 
@@ -72,6 +74,13 @@ enum {
     ITEM_SOUND_BIKE_MUSIC,
     ITEM_SOUND_SURF_MUSIC,
     ITEM_SOUND_COUNT,
+};
+
+enum {
+    ITEM_ASSIST_INFINITE_RARE_CANDY,
+    ITEM_ASSIST_INFINITE_REPEL,
+    ITEM_ASSIST_AUTO_HEAL,
+    ITEM_ASSIST_COUNT,
 };
 
 #define MAX_ITEMS_PER_TAB 16
@@ -364,6 +373,18 @@ static const u8 *const sDesc_SurfMusic[] = {
     COMPOUND_STRING("Enables SURF music."),
     COMPOUND_STRING("Disables SURF music."),
 };
+static const u8 *const sDesc_InfiniteRareCandy[] = {
+    COMPOUND_STRING("Get a RARE CANDY that is never\nused up. The level cap applies."),
+    COMPOUND_STRING("RARE CANDIES are used up as usual."),
+};
+static const u8 *const sDesc_InfiniteRepel[] = {
+    COMPOUND_STRING("No wild {PKMN} appear when you\nwalk or SURF."),
+    COMPOUND_STRING("Wild {PKMN} appear as usual."),
+};
+static const u8 *const sDesc_AutoHeal[] = {
+    COMPOUND_STRING("Fully heal your party after every\nbattle you don't lose."),
+    COMPOUND_STRING("Heal your party at a {PKMN}CENTER\nas usual."),
+};
 
 // =============================================================================
 // Tab item tables
@@ -522,6 +543,27 @@ static const struct OptionMenuItem sTabItems_Sound[] = {
     },
 };
 
+static const struct OptionMenuItem sTabItems_Assist[] = {
+    [ITEM_ASSIST_INFINITE_RARE_CANDY] = {
+        .name         = COMPOUND_STRING("INFINITE CANDY"),
+        .descriptions = sDesc_InfiniteRareCandy,
+        .numChoices   = 2,
+        .choiceNames  = sChoices_OnOff,
+    },
+    [ITEM_ASSIST_INFINITE_REPEL] = {
+        .name         = COMPOUND_STRING("INFINITE REPEL"),
+        .descriptions = sDesc_InfiniteRepel,
+        .numChoices   = 2,
+        .choiceNames  = sChoices_OnOff,
+    },
+    [ITEM_ASSIST_AUTO_HEAL] = {
+        .name         = COMPOUND_STRING("AUTO HEAL"),
+        .descriptions = sDesc_AutoHeal,
+        .numChoices   = 2,
+        .choiceNames  = sChoices_OnOff,
+    },
+};
+
 // =============================================================================
 // Per-tab metadata
 // =============================================================================
@@ -537,6 +579,7 @@ static const struct TabDef sTabs[TAB_COUNT] = {
     [TAB_MAIN]   = { COMPOUND_STRING("OPTIONS"),        sTabItems_Main,   ITEM_MAIN_COUNT },
     [TAB_BATTLE] = { COMPOUND_STRING("BATTLE OPTIONS"), sTabItems_Battle, ITEM_BATTLE_COUNT },
     [TAB_SOUND]  = { COMPOUND_STRING("SOUND"),          sTabItems_Sound,  ITEM_SOUND_COUNT },
+    [TAB_ASSIST] = { COMPOUND_STRING("ASSIST"),         sTabItems_Assist, ITEM_ASSIST_COUNT },
 };
 
 // =============================================================================
@@ -1097,6 +1140,13 @@ static void Task_Save(u8 taskId)
     cs->bikeMusic          = *GetSelectionPtr(TAB_SOUND, ITEM_SOUND_BIKE_MUSIC);
     cs->surfMusic          = *GetSelectionPtr(TAB_SOUND, ITEM_SOUND_SURF_MUSIC);
 
+    // Assists store 1 = enabled (so old saves start with them off), but the
+    // menu's choice 0 is ON
+    cs->infiniteRareCandy   = *GetSelectionPtr(TAB_ASSIST, ITEM_ASSIST_INFINITE_RARE_CANDY) == 0;
+    cs->infiniteRepel       = *GetSelectionPtr(TAB_ASSIST, ITEM_ASSIST_INFINITE_REPEL) == 0;
+    cs->autoHealAfterBattle = *GetSelectionPtr(TAB_ASSIST, ITEM_ASSIST_AUTO_HEAL) == 0;
+    TryGiveInfiniteRareCandy();
+
     BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
     gTasks[taskId].func = Task_FadeOut;
 }
@@ -1204,6 +1254,10 @@ void CB2_InitOptionMenu(void)
         *GetSelectionPtr(TAB_SOUND, ITEM_SOUND_MUSIC)      = cs->musicOnOff;
         *GetSelectionPtr(TAB_SOUND, ITEM_SOUND_BIKE_MUSIC) = cs->bikeMusic;
         *GetSelectionPtr(TAB_SOUND, ITEM_SOUND_SURF_MUSIC) = cs->surfMusic;
+
+        *GetSelectionPtr(TAB_ASSIST, ITEM_ASSIST_INFINITE_RARE_CANDY) = !cs->infiniteRareCandy;
+        *GetSelectionPtr(TAB_ASSIST, ITEM_ASSIST_INFINITE_REPEL)      = !cs->infiniteRepel;
+        *GetSelectionPtr(TAB_ASSIST, ITEM_ASSIST_AUTO_HEAL)           = !cs->autoHealAfterBattle;
 
         gMain.state++;
         break;

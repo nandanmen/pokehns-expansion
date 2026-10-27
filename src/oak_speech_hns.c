@@ -634,6 +634,9 @@ static void Task_NewGameHnsSpeech_FadeOutToChallengeMenu(u8 taskId)
         gSaveBlock3Ptr->challengeSettings.musicOnOff         = savedOptions.musicOnOff;
         gSaveBlock3Ptr->challengeSettings.bikeMusic          = savedOptions.bikeMusic;
         gSaveBlock3Ptr->challengeSettings.surfMusic          = savedOptions.surfMusic;
+        gSaveBlock3Ptr->challengeSettings.infiniteRareCandy  = savedOptions.infiniteRareCandy;
+        gSaveBlock3Ptr->challengeSettings.infiniteRepel      = savedOptions.infiniteRepel;
+        gSaveBlock3Ptr->challengeSettings.autoHealAfterBattle= savedOptions.autoHealAfterBattle;
         ChallengeMenu_SetInitialSetup(TRUE);
         gMain.savedCallback = CB2_NewGameHnsSpeech_ReturnFromChallengeMenu;
         SetMainCallback2(CB2_InitChallengeMenu);

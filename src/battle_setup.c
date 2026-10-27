@@ -86,6 +86,7 @@ static void SaveChangesToPlayerParty(void);
 static void HandleBattleVariantEndParty(void);
 static void CB2_EndTrainerBattle(void);
 static bool32 IsPlayerDefeated(u32 battleOutcome);
+static void TryAutoHealAfterBattle(void);
 #if FREE_MATCH_CALL == FALSE
 static u16 GetRematchTrainerId(u16 trainerId);
 #endif //FREE_MATCH_CALL
@@ -766,6 +767,7 @@ static void CB2_EndWildBattle(void)
     {
         SetMainCallback2(CB2_ReturnToField);
         DowngradeBadPoison();
+        TryAutoHealAfterBattle();
         gFieldCallback = FieldCB_ReturnToFieldNoScriptCheckMusic;
     }
 }
@@ -785,6 +787,7 @@ static void CB2_EndScriptedWildBattle(void)
     else
     {
         DowngradeBadPoison();
+        TryAutoHealAfterBattle();
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
     }
 }
@@ -806,6 +809,7 @@ static void CB2_EndMarowakBattle(void)
         else
             gSpecialVar_Result = TRUE;
         DowngradeBadPoison();
+        TryAutoHealAfterBattle();
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
     }
 }
@@ -1318,6 +1322,27 @@ static bool32 IsPlayerDefeated(u32 battleOutcome)
     }
 }
 
+// Auto Heal (options menu). Skipped in the Frontier-style facilities, whose rules
+// control healing, and a Nuzlocke run never revives a fainted mon
+static void TryAutoHealAfterBattle(void)
+{
+    u32 i;
+    bool32 nuzlocke;
+
+    if (!gSaveBlock3Ptr->challengeSettings.autoHealAfterBattle)
+        return;
+    if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE || InBattlePike() || InTrainerHillChallenge())
+        return;
+
+    nuzlocke = IsNuzlockeActive() || IsNuzlockeEasyActive();
+    for (i = 0; i < gPlayerPartyCount; i++)
+    {
+        if (nuzlocke && GetMonData(&gPlayerParty[i], MON_DATA_HP) == 0)
+            continue;
+        HealPokemon(&gPlayerParty[i]);
+    }
+}
+
 void ResetTrainerOpponentIds(void)
 {
     TRAINER_BATTLE_PARAM.opponentA = 0;
@@ -1738,6 +1763,7 @@ static void CB2_EndTrainerBattle(void)
         else
         {
             gSpecialVar_Result = FALSE;
+            TryAutoHealAfterBattle();
         }
         DowngradeBadPoison();
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
@@ -1766,6 +1792,7 @@ static void CB2_EndTrainerBattle(void)
     {
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
         DowngradeBadPoison();
+        TryAutoHealAfterBattle();
         if (CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE && !InTrainerHillChallenge())
         {
             RegisterTrainerInMatchCall();
@@ -1792,6 +1819,7 @@ static void CB2_EndRematchBattle(void)
         SetBattledTrainersFlags();
         HandleRematchVarsOnBattleEnd();
         DowngradeBadPoison();
+        TryAutoHealAfterBattle();
     }
 }
 

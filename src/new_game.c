@@ -263,6 +263,7 @@ void NewGameInitData(void)
     gSaveBlock1Ptr->registeredItem = ITEM_NONE;
     gSaveBlock3Ptr->registeredItemHold = ITEM_NONE;
     ClearBag();
+    TryGiveInfiniteRareCandy();
     NewGameInitPCItems();
     ClearPokeblocks();
     ClearDecorationInventories();

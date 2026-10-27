@@ -877,7 +877,17 @@ u8 GetItemImportance(enum Item itemId)
     if (gSaveBlock3Ptr->challengeSettings.tx_Mode_InfiniteTMs == 1
      && gItemsInfo[SanitizeItemId(itemId)].pocket == POCKET_TM_HM)
         return TRUE;
+    // Like Infinite TMs: the one candy can't be tossed, sold or held
+    if (gSaveBlock3Ptr->challengeSettings.infiniteRareCandy && itemId == ITEM_RARE_CANDY)
+        return TRUE;
     return gItemsInfo[SanitizeItemId(itemId)].importance;
+}
+
+// Infinite Candy (options menu) needs a Rare Candy in the bag to use
+void TryGiveInfiniteRareCandy(void)
+{
+    if (gSaveBlock3Ptr->challengeSettings.infiniteRareCandy && !CheckBagHasItem(ITEM_RARE_CANDY, 1))
+        AddBagItem(ITEM_RARE_CANDY, 1);
 }
 
 u8 GetItemConsumability(enum Item itemId)

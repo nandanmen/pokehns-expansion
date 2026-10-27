@@ -2,6 +2,7 @@
 #include "battle_setup.h"
 #include "battle_pike.h"
 #include "battle_pyramid.h"
+#include "bug_contest.h"
 #include "event_data.h"
 #include "fieldmap.h"
 #include "fishing.h"
@@ -779,6 +780,16 @@ static bool8 AreLegendariesInSootopolisPreventingEncounters(void)
     return FlagGet(FLAG_LEGENDARIES_IN_SOOTOPOLIS);
 }
 
+// Infinite Repel (options menu) turns off random encounters, except where
+// catching wild Pokemon is the point
+static bool32 AreWildEncountersSwitchedOff(void)
+{
+    if (!gSaveBlock3Ptr->challengeSettings.infiniteRepel)
+        return FALSE;
+    return !GetSafariZoneFlag() && !GetBugContestFlag()
+        && !InBattlePike() && CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE;
+}
+
 bool8 StandardWildEncounter(u16 curMetatileBehavior, u16 prevMetatileBehavior)
 {
     u32 headerId;
@@ -789,6 +800,9 @@ bool8 StandardWildEncounter(u16 curMetatileBehavior, u16 prevMetatileBehavior)
         return FALSE;
 
     if (DEXNAV_PAUSE_WILD_ENCOUNTERS && FlagGet(DN_FLAG_SEARCHING))
+        return FALSE;
+
+    if (AreWildEncountersSwitchedOff())
         return FALSE;
 
     headerId = GetCurrentMapWildMonHeaderId();

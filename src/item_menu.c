@@ -1758,8 +1758,12 @@ static void OpenContextMenu(u8 taskId)
                 gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_BerriesPocket);
                 break;
             case POCKET_MEDICINE:
-                gBagMenu->contextMenuItemsPtr = sContextMenuItems_MedicinePocket;
+                gBagMenu->contextMenuItemsPtr = gBagMenu->contextMenuItemsBuffer;
                 gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_MedicinePocket);
+                memcpy(&gBagMenu->contextMenuItemsBuffer, &sContextMenuItems_MedicinePocket, sizeof(sContextMenuItems_MedicinePocket));
+                // The Infinite Candy Rare Candy can't be tossed
+                if (GetItemImportance(gSpecialVar_ItemId))
+                    gBagMenu->contextMenuItemsBuffer[2] = ACTION_DUMMY;
                 break;
 #if I_COMBINE_BAG_POCKETS == FALSE
             case POCKET_BATTLE_ITEMS:
