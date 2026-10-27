@@ -8029,7 +8029,7 @@ Ability: Compound Eyes
 - U Turn
 - Detect
 - Air Cutter
-- Ancient Power
+- Ancientpower
 
 Beedrill
 Level: 18
@@ -8308,6 +8308,7 @@ IVs: 7 HP / 7 Atk / 7 Def / 7 SpA / 7 SpD / 7 Spe
 Gengar @ Sitrus Berry
 Level: 29
 IVs: 7 HP / 7 Atk / 7 Def / 7 SpA / 7 SpD / 7 Spe
+Ability: Levitate
 - Hypnosis
 - Shadow Ball
 - Thunderbolt
@@ -8870,7 +8871,7 @@ IVs: 9 HP / 9 Atk / 9 Def / 9 SpA / 9 SpD / 9 Spe
 Ability: Anger Point
 - Substitute
 - Focus Punch
-- Thunderpunch
+- Thunder Punch
 - Rock Slide
 
 Breloom
@@ -9119,7 +9120,7 @@ Dragonair
 Level: 48
 IVs: 18 HP / 18 Atk / 18 Def / 18 SpA / 18 SpD / 18 Spe
 Ability: Shed Skin
-- Extremespeed
+- Extreme Speed
 - Aqua Tail
 - Outrage
 - Dragon Pulse
@@ -9376,7 +9377,7 @@ Electivire
 Level: 61
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
 Ability: Vital Spirit
-- Thunderpunch
+- Thunder Punch
 - Ice Punch
 - Earthquake
 - Cross Chop
@@ -9701,7 +9702,7 @@ Machamp
 Level: 68
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
 Ability: No Guard
-- Dynamic Punch
+- Dynamicpunch
 - Ice Punch
 - Stone Edge
 - Fire Punch
@@ -9939,7 +9940,7 @@ Ability: Keen Eye
 - Fire Punch
 - Ice Punch
 - High Jump Kick
-- Thunderpunch
+- Thunder Punch
 
 Lucario
 Level: 54
@@ -9948,7 +9949,7 @@ Ability: Steadfast
 - Aura Sphere
 - Dark Pulse
 - Psychic
-- Extremespeed
+- Extreme Speed
 
 Hariyama
 Level: 55
@@ -9956,16 +9957,16 @@ IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
 Ability: Thick Fat
 - Substitute
 - Focus Punch
-- Thunderpunch
+- Thunder Punch
 - Payback
 
 Machamp @ Sitrus Berry
 Level: 55
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
 Ability: Guts
-- Dynamic Punch
+- Dynamicpunch
 - Stone Edge
-- Thunderpunch
+- Thunder Punch
 - Bullet Punch
 
 === TRAINER_BRUNO_2_HNS ===
@@ -10004,7 +10005,7 @@ Ability: Iron Fist
 - Close Combat
 - Ice Punch
 - Mach Punch
-- Thunderpunch
+- Thunder Punch
 
 Lucario
 Level: 80
@@ -10013,7 +10014,7 @@ Ability: Inner Focus
 - Close Combat
 - Crunch
 - Ice Punch
-- Extremespeed
+- Extreme Speed
 
 Infernape @ White Herb
 Level: 80
@@ -10028,7 +10029,7 @@ Machamp @ Sitrus Berry
 Level: 81
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
 Ability: No Guard
-- Dynamic Punch
+- Dynamicpunch
 - Payback
 - Stone Edge
 - Bullet Punch
@@ -10129,7 +10130,6 @@ Ability: Super Luck
 Shiftry
 Level: 78
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-Ability: Early Bird
 - Sucker Punch
 - Seed Bomb
 - Low Kick
@@ -10399,7 +10399,7 @@ Ability: Levitate
 - Outrage
 - U Turn
 - Earthquake
-- Thunderpunch
+- Thunder Punch
 
 Charizard @ White Herb
 Level: 84
@@ -10582,7 +10582,7 @@ Ability: Poison Point
 - Surf
 - Focus Energy
 - Ice Beam
-- Dragonbreath
+- Dragon Breath
 
 Magmar
 Level: 44
@@ -10596,6 +10596,7 @@ Ability: Flame Body
 Gengar
 Level: 45
 IVs: 17 HP / 17 Atk / 17 Def / 17 SpA / 17 SpD / 17 Spe
+Ability: Levitate
 - Shadow Ball
 - Giga Drain
 - Thunder
@@ -10642,6 +10643,7 @@ Ability: Insomnia
 Gengar
 Level: 49
 IVs: 21 HP / 21 Atk / 21 Def / 21 SpA / 21 SpD / 21 Spe
+Ability: Levitate
 - Shadow Ball
 - Thunderbolt
 - Destiny Bond
@@ -10706,6 +10708,7 @@ Ability: Insomnia
 Gengar
 Level: 56
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+Ability: Levitate
 - Shadow Ball
 - Thunderbolt
 - Sludge Bomb
@@ -10881,7 +10884,7 @@ Ability: Poison Point
 - Surf
 - Focus Energy
 - Ice Beam
-- Dragonbreath
+- Dragon Breath
 
 Electabuzz
 Level: 44
@@ -10895,6 +10898,7 @@ Ability: Static
 Gengar
 Level: 45
 IVs: 17 HP / 17 Atk / 17 Def / 17 SpA / 17 SpD / 17 Spe
+Ability: Levitate
 - Shadow Ball
 - Giga Drain
 - Thunder
@@ -10941,6 +10945,7 @@ Ability: Insomnia
 Gengar
 Level: 49
 IVs: 21 HP / 21 Atk / 21 Def / 21 SpA / 21 SpD / 21 Spe
+Ability: Levitate
 - Shadow Ball
 - Thunderbolt
 - Destiny Bond
@@ -10979,7 +10984,7 @@ IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
 Ability: Blaze
 - Fire Blast
 - Focus Blast
-- Thunderpunch
+- Thunder Punch
 - Low Kick
 
 === TRAINER_RIVAL_CYNDAQUIL_6_HNS ===
@@ -11005,6 +11010,7 @@ Ability: Insomnia
 Gengar
 Level: 56
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+Ability: Levitate
 - Shadow Ball
 - Thunderbolt
 - Sludge Bomb
@@ -11032,7 +11038,7 @@ Electivire
 Level: 58
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
 Ability: Motor Drive
-- Thunderpunch
+- Thunder Punch
 - Ice Punch
 - Earthquake
 - Brick Break
@@ -11194,6 +11200,7 @@ Ability: Static
 Gengar
 Level: 45
 IVs: 17 HP / 17 Atk / 17 Def / 17 SpA / 17 SpD / 17 Spe
+Ability: Levitate
 - Shadow Ball
 - Giga Drain
 - Thunder
@@ -11240,6 +11247,7 @@ Ability: Insomnia
 Gengar
 Level: 49
 IVs: 21 HP / 21 Atk / 21 Def / 21 SpA / 21 SpD / 21 Spe
+Ability: Levitate
 - Shadow Ball
 - Thunderbolt
 - Destiny Bond
@@ -11304,6 +11312,7 @@ Ability: Insomnia
 Gengar
 Level: 56
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+Ability: Levitate
 - Shadow Ball
 - Thunderbolt
 - Sludge Bomb
@@ -11331,7 +11340,7 @@ Electivire
 Level: 58
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
 Ability: Motor Drive
-- Thunderpunch
+- Thunder Punch
 - Ice Punch
 - Earthquake
 - Brick Break
@@ -11632,7 +11641,7 @@ Ability: Sand Veil
 - Needle Arm
 - Sucker Punch
 - Focus Blast
-- Thunderpunch
+- Thunder Punch
 
 Tauros
 Level: 45
